@@ -27,9 +27,9 @@ public class ProdReviewServiceImpl implements ProdReviewsService {
 	}
 	
 	@Override
-	public Optional<ProdReviews> getProdReview(long Id)
+	public List<ProdReviews> getProdReview(long Id)
 	{
-		Optional<ProdReviews> prodReviews = reviewProdRepo.findById(Id);
+		List<ProdReviews> prodReviews = reviewProdRepo.findByProdId(Id);
 		return prodReviews;
 	}
 	

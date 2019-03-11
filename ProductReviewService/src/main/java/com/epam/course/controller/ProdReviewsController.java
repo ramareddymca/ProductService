@@ -28,7 +28,7 @@ public class ProdReviewsController {
 	
 	@GetMapping("/prodReviews")
 	public ResponseEntity<List<ProdReviews>> getProdReviews()	{
-		
+			
 		if(!prodService.getProdReviews().isEmpty()) {
 			return ResponseEntity.ok(prodService.getProdReviews());
 		} else {			
@@ -45,11 +45,11 @@ public class ProdReviewsController {
 	}
 	
 	@GetMapping("/prodReviews/{Id}")
-	public ResponseEntity<Optional<ProdReviews>> getProdReview(final @PathVariable long Id)
+	public ResponseEntity<List<ProdReviews>> getProdReview(final @PathVariable long Id)
 	{
-		Optional<ProdReviews> prodReviews = prodService.getProdReview(Id);
-		if(!prodReviews.isPresent()) {	
-			return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg(Id, ProductCodes.PROD_NOT_AVAIL));
+		 List<ProdReviews> prodReviews = prodService.getProdReview(Id);		
+		if(prodReviews.isEmpty()) {	
+			return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg());
 		} else {
 			return ResponseEntity.ok(prodService.getProdReview(Id));
 		}
@@ -59,8 +59,7 @@ public class ProdReviewsController {
 	@DeleteMapping("/prodReviews/{Id}")
 	public ResponseEntity<?> removeProdReview(final @PathVariable long Id)
 	{
-		Optional<ProdReviews> prodReviews = prodService.removeProdReview(Id);
-		
+		Optional<ProdReviews> prodReviews = prodService.removeProdReview(Id);		
 		if(!prodReviews.isPresent())			
 			return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg(Id, ProductCodes.PROD_NOT_DEL));
 		else

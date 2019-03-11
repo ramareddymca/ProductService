@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.epam.course</groupId>
-	<artifactId>reviewProductService</artifactId>
+	<artifactId>ProductReviewService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>reviewProductService</name>
+	<name>ProductReviewService</name>
 	<description>Spring Boot review product service</description>
 
 	<properties>

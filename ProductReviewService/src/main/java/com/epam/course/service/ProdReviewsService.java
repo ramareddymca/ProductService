@@ -19,7 +19,7 @@ public interface ProdReviewsService {
 	
 	public List<ProdReviews> getProdReviews();
 	public ProdReviews saveProdProdReviews(ProdReviews prodReviews);
-	public Optional<ProdReviews> getProdReview(long prodId);
+	public List<ProdReviews> getProdReview(long prodId);
 	public Optional<ProdReviews> removeProdReview(long prodId);
 	//public boolean removeMyProduct(long prodId);
 	

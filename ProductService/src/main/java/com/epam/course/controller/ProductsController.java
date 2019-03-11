@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpEntity;
@@ -49,14 +50,18 @@ public class ProductsController {
 	public Resource<Product> getProduct(@PathVariable long id) {
 		Optional<Product> product = prodService.getProduct(id);
 		// calling Product reviews thru Rest template
-		HttpHeaders headers = new HttpHeaders();
+		/*HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		HttpEntity<ProdReviews> entity = new HttpEntity<ProdReviews>(headers);
-		ProdReviews review = restTemplate
-				.exchange("http://localhost:8091/api/prodReviews/"+id, HttpMethod.GET, entity, ProdReviews.class)
-				.getBody();
+		HttpEntity<List<ProdReviews>> entity = new HttpEntity<List<ProdReviews>>(headers);
+		List<ProdReviews> review2 = restTemplate
+				.exchange("http://localhost:8091/api/prodReviews/"+id, HttpMethod.GET, entity, List.class)
+				.getBody();*/
+		String prodReviewService_url ="http://localhost:8091/api/prodReviews/{id}";
+		ResponseEntity<List<ProdReviews>> response = restTemplate.exchange(prodReviewService_url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<ProdReviews>>() {      }, id);
+		List<ProdReviews> review = response.getBody();		
 		System.out.println("This Product review -> "+review);
-		
+		product.get().setProdReviews(review);
 		Resource<Product> resource = new Resource<Product>(product.get());
 		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
 		resource.add(linkTo.withRel("all-products"));

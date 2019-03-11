@@ -1,12 +1,13 @@
 package com.epam.course.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.NotFound;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -21,6 +22,8 @@ public class Product {
 	private String name;
 	private String details;
 	private String detail2;	
+	@Transient
+	private List<ProdReviews> prodReviews;	
 	
 	public Product() {		
 	}
@@ -61,6 +64,14 @@ public class Product {
 
 	public void setDetail2(String detail2) {
 		this.detail2 = detail2;
+	}
+
+	public List<ProdReviews> getProdReviews() {
+		return prodReviews;
+	}
+
+	public void setProdReviews(List<ProdReviews> prodReviews) {
+		this.prodReviews = prodReviews;
 	}
 	
 }
