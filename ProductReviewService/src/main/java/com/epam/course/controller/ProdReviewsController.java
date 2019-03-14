@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +28,7 @@ public class ProdReviewsController {
 	
 	
 	@GetMapping("/prodReviews")
-	public ResponseEntity<List<ProdReviews>> getProdReviews()	{
+	public ResponseEntity<List<ProdReviews>> getProdReviews(@RequestHeader(value = "API_KEY") String secret)	{		
 			
 		if(!prodService.getProdReviews().isEmpty()) {
 			return ResponseEntity.ok(prodService.getProdReviews());
@@ -38,14 +39,14 @@ public class ProdReviewsController {
 	}
 	
 	@PostMapping("/prodReviews")
-	public ResponseEntity<ProdReviews> saveProdReview(@RequestBody ProdReviews prodReviews)
+	public ResponseEntity<ProdReviews> saveProdReview(@RequestBody ProdReviews prodReviews,@RequestHeader(value = "API_KEY") String secret)
 	{	
 		return ResponseEntity.ok(prodService.saveProdProdReviews(prodReviews));
 		
 	}
 	
 	@GetMapping("/prodReviews/{Id}")
-	public ResponseEntity<List<ProdReviews>> getProdReview(final @PathVariable long Id)
+	public ResponseEntity<List<ProdReviews>> getProdReview(final @PathVariable long Id,@RequestHeader(value = "API_KEY") String secret)
 	{
 		 List<ProdReviews> prodReviews = prodService.getProdReview(Id);		
 		if(prodReviews.isEmpty()) {	
@@ -57,7 +58,7 @@ public class ProdReviewsController {
 	}
 	
 	@DeleteMapping("/prodReviews/{Id}")
-	public ResponseEntity<?> removeProdReview(final @PathVariable long Id)
+	public ResponseEntity<?> removeProdReview(final @PathVariable long Id,@RequestHeader(value = "API_KEY") String secret)
 	{
 		Optional<ProdReviews> prodReviews = prodService.removeProdReview(Id);		
 		if(!prodReviews.isPresent())			

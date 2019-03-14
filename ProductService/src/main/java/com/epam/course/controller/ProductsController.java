@@ -49,15 +49,13 @@ public class ProductsController {
 	@GetMapping("/products/{id}")
 	public Resource<Product> getProduct(@PathVariable long id) {
 		Optional<Product> product = prodService.getProduct(id);
-		// calling Product reviews thru Rest template
-		/*HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		HttpEntity<List<ProdReviews>> entity = new HttpEntity<List<ProdReviews>>(headers);
-		List<ProdReviews> review2 = restTemplate
-				.exchange("http://localhost:8091/api/prodReviews/"+id, HttpMethod.GET, entity, List.class)
-				.getBody();*/
+		// calling Product reviews thru Rest template + API_KEY	
+		HttpHeaders headers = new HttpHeaders();
+        headers.set("API_KEY", "test");
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		
 		String prodReviewService_url ="http://localhost:8091/api/prodReviews/{id}";
-		ResponseEntity<List<ProdReviews>> response = restTemplate.exchange(prodReviewService_url, HttpMethod.GET, null,
+		ResponseEntity<List<ProdReviews>> response = restTemplate.exchange(prodReviewService_url, HttpMethod.GET, entity,
                 new ParameterizedTypeReference<List<ProdReviews>>() {      }, id);
 		List<ProdReviews> review = response.getBody();		
 		System.out.println("This Product review -> "+review);
@@ -80,6 +78,20 @@ public class ProductsController {
 			return ResponseEntity.ok(ProductHelper.buildErrMsg(prodId, ProductCodes.PROD_NOT_DEL));
 		else
 			return ResponseEntity.ok(ProductHelper.buildErrMsg(prodId, ProductCodes.PROD_DEL_SUCCESS));
+	}
+	
+	@PostMapping("/products/{prodId}/reviews")
+	public ResponseEntity<Product> saveProducts(@RequestBody Product product,@PathVariable long prodId) {
+		product.setProdId(prodId);	
+		
+		// calling Product reviews thru Rest template + API_KEY	
+		HttpHeaders headers = new HttpHeaders();
+        headers.set("API_KEY", "test");
+        headers.setContentType(MediaType.APPLICATION_JSON);     	
+        HttpEntity<ProdReviews> entity = new HttpEntity<ProdReviews>(product.getProdReviews().get(0),headers);
+		String prodReviewService_url ="http://localhost:8091/api/prodReviews/";	
+		restTemplate.postForObject(prodReviewService_url, entity, ProdReviews.class);			 
+		return ResponseEntity.ok(prodService.saveProduct(product));
 	}
 
 }
