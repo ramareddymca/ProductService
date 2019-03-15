@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -73,5 +75,7 @@ public class Product {
 	public void setProdReviews(List<ProdReviews> prodReviews) {
 		this.prodReviews = prodReviews;
 	}
+
+	
 	
 }
