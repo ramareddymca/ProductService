@@ -24,5 +24,17 @@ public class ProductHelper {
 		noData.add(new ProductNotFoundException().buildErr(ProductCodes.PRODS_NOT_AVAIL));
 		return noData;
 	}
+	
+	public static List<Product> fallBackErrMsg() {	
+		List<Product> noData = new ArrayList<Product>(1);
+		noData.add(new ProductNotFoundException().buildErr(ProductCodes.SERVICE_DOWN));
+		return noData;
+	}
+	
+	public static Product fallBackProdReviewErrMsg() {
+		Product product = new Product();
+		product.setDesc(ProductCodes.SERVICE_DOWN);
+		return product;
+	}
 
 }

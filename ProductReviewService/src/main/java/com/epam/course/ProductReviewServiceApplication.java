@@ -6,11 +6,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class ReviewProductServiceApplication {
+public class ProductReviewServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ReviewProductServiceApplication.class, args);
-		System.out.println("review service running.......");
+		SpringApplication.run(ProductReviewServiceApplication.class, args);
+		System.out.println("Prod review service running.......");
 	}
 
 }

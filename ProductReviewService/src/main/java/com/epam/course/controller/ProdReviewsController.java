@@ -19,6 +19,7 @@ import com.epam.course.helper.ProdReviewsHelper;
 import com.epam.course.model.ProdReviews;
 import com.epam.course.service.ProdReviewsService;
 
+
 @RestController
 @RequestMapping("/api")
 public class ProdReviewsController {
@@ -65,6 +66,11 @@ public class ProdReviewsController {
 			return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg(Id, ProductCodes.PROD_NOT_DEL));
 		else
 			return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg(Id, ProductCodes.PROD_DEL_SUCCESS));	
+	}
+	
+	public ResponseEntity<List<ProdReviews>> getProdReview_Fallback(final @PathVariable long Id)
+	{		
+		return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg());
 	}
 
 }

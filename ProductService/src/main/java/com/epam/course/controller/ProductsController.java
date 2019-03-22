@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
@@ -31,6 +31,7 @@ import com.epam.course.helper.ProductHelper;
 import com.epam.course.model.ProdReviews;
 import com.epam.course.model.Product;
 import com.epam.course.service.ProductService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping("/api")
@@ -40,7 +41,7 @@ public class ProductsController {
 	private transient ProductService prodService;
 	
 	@Autowired
-	private DiscoveryClient discoveryClient;
+	private LoadBalancerClient loadBalancer;
 	
 	@Autowired
 	RestTemplate restTemplate;
@@ -50,6 +51,7 @@ public class ProductsController {
 		return prodService.getProducts();
 	}
 
+	@HystrixCommand(fallbackMethod = "getProduct_fallback")
 	@GetMapping("/products/{id}")
 	public Resource<Product> getProduct(@PathVariable long id) {
 		Optional<Product> product = prodService.getProduct(id);
@@ -79,6 +81,7 @@ public class ProductsController {
 			return ResponseEntity.ok(ProductHelper.buildErrMsg(prodId, ProductCodes.PROD_DEL_SUCCESS));
 	}
 	
+	@HystrixCommand(fallbackMethod = "saveProducts_fallback")
 	@PostMapping("/products/{prodId}/reviews")
 	public ResponseEntity<Product> saveProducts(@RequestBody Product product,@PathVariable long prodId) {
 		product.setProdId(prodId);			
@@ -92,12 +95,12 @@ public class ProductsController {
 		return ResponseEntity.ok(prodService.saveProduct(product));
 	}
 	
-	private String getDynamicUrl() {		
-		List<ServiceInstance> instances=discoveryClient.getInstances("productreview-service");
-		ServiceInstance serviceInstance=instances.get(0);		
-		String baseUrlfromClient =serviceInstance.getUri().toString();
-		System.out.println("baseUrlfromClient -> "+baseUrlfromClient);
-		return baseUrlfromClient;
+	private String getDynamicUrl() {
+		ServiceInstance serviceInstance=loadBalancer.choose("productreview-service");
+		System.out.println(serviceInstance.getUri());
+		String baseUrlFrmRibbon=serviceInstance.getUri().toString();		
+		System.out.println("baseUrl from Ribbon -> "+baseUrlFrmRibbon);
+		return baseUrlFrmRibbon;
 	}
 	
 	private List<ProdReviews> getProdReview(String prodReviewService_url,long id) {		
@@ -109,5 +112,20 @@ public class ProductsController {
 		List<ProdReviews> review = response.getBody();	
 		return review;
 	}
+	
+	public Resource<Product> getProduct_fallback(@PathVariable long id) {
+		List<Product> product = ProductHelper.fallBackErrMsg();		
+		Resource<Product> resource = new Resource<Product>(product.get(0));
+		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
+		resource.add(linkTo.withRel("no-products"));
+		return resource;
+	}
+	
+	public ResponseEntity<Product> saveProducts_fallback(@RequestBody Product product,@PathVariable long prodId) {
+		Product prod = ProductHelper.fallBackProdReviewErrMsg();		
+		return ResponseEntity.ok(prod);
+	}
+	
+	
 
 }

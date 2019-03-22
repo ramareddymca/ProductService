@@ -10,7 +10,7 @@ import com.epam.course.model.ProdReviews;
 import com.epam.course.repository.ProdReviewsRepository;
 
 @Service
-public class ProdReviewServiceImpl implements ProdReviewsService {
+public class ProdReviewsServiceImpl implements ProdReviewsService {
 	@Autowired
 	private ProdReviewsRepository reviewProdRepo;
 
