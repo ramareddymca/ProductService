@@ -49,7 +49,9 @@ public class ProdReviewsController {
 	@GetMapping("/prodReviews/{Id}")
 	public ResponseEntity<List<ProdReviews>> getProdReview(final @PathVariable long Id,@RequestHeader(value = "API_KEY") String secret)
 	{
-		 List<ProdReviews> prodReviews = prodService.getProdReview(Id);		
+		 System.out.println("getProdReview inside ::"); 
+		List<ProdReviews> prodReviews = prodService.getProdReview(Id);		
+		 System.out.println("prod Reviews ::"+prodReviews.toString());
 		if(prodReviews.isEmpty()) {	
 			return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg());
 		} else {
@@ -71,6 +73,19 @@ public class ProdReviewsController {
 	public ResponseEntity<List<ProdReviews>> getProdReview_Fallback(final @PathVariable long Id)
 	{		
 		return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg());
+	}
+	
+	@GetMapping("/reviews/{Id}")
+	public List<ProdReviews> getReviews(final @PathVariable long Id)
+	{
+		 List<ProdReviews> prodReviews = prodService.getProdReview(Id);		
+		 System.out.println(" Reviews ::"+prodReviews.toString());
+		if(prodReviews.isEmpty()) {	
+			return ProdReviewsHelper.buildErrMsg();
+		} else {
+			return prodService.getProdReview(Id);
+		}
+		
 	}
 
 }
