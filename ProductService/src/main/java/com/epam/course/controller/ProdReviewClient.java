@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.epam.course.model.ProdReviews;
 
-@FeignClient(name = "PRODUCTREVIEW-SERVICE")
-public interface ProdReviewServiceClient {
+@FeignClient(name = "PRODUCTREVIEW-SERVICE",fallback = ProdReviewClientFallback.class)
+public interface ProdReviewClient {
 
 	@RequestMapping(value = "/api/prodReviews/{id}", method = RequestMethod.GET)
 	public List<ProdReviews> getReviews(final @PathVariable("id") long Id,
