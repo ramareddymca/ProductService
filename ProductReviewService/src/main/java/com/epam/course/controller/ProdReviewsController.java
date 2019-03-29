@@ -3,6 +3,8 @@ package com.epam.course.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +25,8 @@ import com.epam.course.service.ProdReviewsService;
 @RestController
 @RequestMapping("/api")
 public class ProdReviewsController {
+	
+	private static Logger log = LoggerFactory.getLogger(ProdReviewsController.class);
 	
 	@Autowired
 	private transient ProdReviewsService prodService;
@@ -48,10 +52,9 @@ public class ProdReviewsController {
 	
 	@GetMapping("/prodReviews/{Id}")
 	public ResponseEntity<List<ProdReviews>> getProdReview(final @PathVariable long Id,@RequestHeader(value = "API_KEY") String secret)
-	{
-		 System.out.println("getProdReview inside ::"); 
-		List<ProdReviews> prodReviews = prodService.getProdReview(Id);		
-		 System.out.println("prod Reviews ::"+prodReviews.toString());
+	{		
+		List<ProdReviews> prodReviews = prodService.getProdReview(Id);
+		log.error("product Reviews info ::" + prodReviews.toString());	
 		if(prodReviews.isEmpty()) {	
 			return ResponseEntity.ok(ProdReviewsHelper.buildErrMsg());
 		} else {
@@ -78,8 +81,8 @@ public class ProdReviewsController {
 	@GetMapping("/reviews/{Id}")
 	public List<ProdReviews> getReviews(final @PathVariable long Id)
 	{
-		 List<ProdReviews> prodReviews = prodService.getProdReview(Id);		
-		 System.out.println(" Reviews ::"+prodReviews.toString());
+		 List<ProdReviews> prodReviews = prodService.getProdReview(Id);	
+		 log.error("product Reviews info ::" + prodReviews.toString());	
 		if(prodReviews.isEmpty()) {	
 			return ProdReviewsHelper.buildErrMsg();
 		} else {

@@ -3,6 +3,8 @@ package com.epam.course.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,8 @@ import com.epam.course.service.ProductService;
 @RestController
 @RequestMapping("/api")
 public class ProductsController {
+	
+	private static Logger log = LoggerFactory.getLogger(ProductsController.class);
 
 	@Autowired
 	private ProductService prodService;
@@ -37,11 +41,11 @@ public class ProductsController {
 	@GetMapping("/products/{id}")
 	public Optional<Product> getProduct(@PathVariable long id) {
 		Optional<Product> product = prodService.getProduct(id);
-		System.out.println("product info ::" + product.toString());
+		log.error("product info ::" + product.toString());	
 		// calling Product reviews thru Feign Client 
-		System.out.println("before product review ");
+		log.error("before product review::");
 		List<ProdReviews> review = feignProxy.getReviews(id, "API_KEY");
-		System.out.println("This Product review from feign -> " + review);
+		log.error("This Product review from feign -> ::" + review.toString());	
 		product.get().setProdReviews(review);
 		return product;
 	}
@@ -51,7 +55,7 @@ public class ProductsController {
 		product.setProdId(prodId);
 		// calling Product reviews thru Feign Client 
 		ProdReviews review = feignProxy.saveProdReview(product.getProdReviews().get(0), "API_KEY");
-		System.out.println("This Product review from feign -> " + review);
+		log.error("This Product review from feign -> ::" + review.toString());		
 		return product;
 	}
 
